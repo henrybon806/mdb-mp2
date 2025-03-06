@@ -79,18 +79,8 @@ export default function NewSocialScreen({ navigation }: Props) {
     }
   };
 
-  const Bar = () => {
-    return (
-      <Appbar.Header>
-        <Appbar.Action onPress={navigation.goBack} icon="close" />
-        <Appbar.Content title="Socials" />
-      </Appbar.Header>
-    );
-  };
-
   return (
     <>
-      <Bar />
       <View style={{ ...styles.container, padding: 20 }}>
         {/* TextInput */}
         {/* TextInput */}

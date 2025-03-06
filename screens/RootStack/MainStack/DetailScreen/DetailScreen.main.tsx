@@ -18,7 +18,7 @@ export default function DetailScreen({ route, navigation }: Props) {
     return (
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.navigate("FeedScreen")} />
-        <Appbar.Content title="Socials" />
+        <Appbar.Content title="Socials" {...({} as any)}/>
       </Appbar.Header>
     );
   };
