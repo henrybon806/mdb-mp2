@@ -100,7 +100,15 @@ export default function NewSocialScreen({ navigation }: Props) {
           author: author,
         };
         await setDoc(socialColRef, social);
-        navigation.navigate("ConfirmationScreen");
+        navigation.navigate("ConfirmationScreen", {
+            socialDetails: {
+              title,
+              location,
+              description,
+              author,
+              eventImage,
+              selectedDate,
+        }});
       }
     } catch (e) {
       console.log("Error while writing social:", e);

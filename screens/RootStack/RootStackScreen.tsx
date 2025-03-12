@@ -7,7 +7,16 @@ import { NavigationContainer } from "@react-navigation/native";
 export type RootStackParamList = {
   Main: undefined;
   NewSocialScreen: undefined;
-  ConfirmationScreen: undefined;
+  ConfirmationScreen: { 
+    socialDetails: {
+      title: string;
+      location: string;
+      description: string;
+      author: string;
+      eventImage: string;
+      selectedDate: string;
+    };
+  };
 };
 
 const RootStack = createStackNavigator<RootStackParamList>();

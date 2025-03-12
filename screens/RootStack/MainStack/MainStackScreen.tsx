@@ -13,7 +13,16 @@ export type MainStackParamList = {
   FeedScreen: undefined;
   DetailScreen: { social: SocialData };
   NewSocialScreen: undefined;
-  ConfirmationScreen: undefined;
+  ConfirmationScreen: { 
+    socialDetails: {
+      title: string;
+      location: string;
+      description: string;
+      author: string;
+      eventImage: string;
+      selectedDate: string;
+    };
+  };
 };
 
 const MainStack = createStackNavigator<MainStackParamList>();

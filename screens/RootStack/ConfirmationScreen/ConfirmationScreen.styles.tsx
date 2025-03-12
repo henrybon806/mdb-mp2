@@ -16,12 +16,10 @@ export const styles = StyleSheet.create({
     height: undefined, 
     aspectRatio: 8 / 9,
     resizeMode: "cover",
-    marginBottom: 20,
   },
   container: {
     flex: 1,
     justifyContent: "space-evenly",
-    
     padding: 20,
   },
   

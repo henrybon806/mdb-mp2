@@ -84,7 +84,7 @@ export default function FeedScreen({ navigation }: Props) {
   useEffect(() => {
     const socialsQuery = query(
       socialColRef, 
-      orderBy("time", "desc") 
+      orderBy("time", "asc") 
     );
 
     const unsub = onSnapshot(socialsQuery, (snapshot) => {

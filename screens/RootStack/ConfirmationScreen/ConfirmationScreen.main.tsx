@@ -10,18 +10,31 @@ import { MainStackParamList } from "../MainStack/MainStackScreen";
 
 interface Props {
   navigation: StackNavigationProp<MainStackParamList, "ConfirmationScreen">;
+  route: {
+    params: {
+      socialDetails: {
+        title: string;
+        location: string;
+        description: string;
+        author: string;
+        eventImage: string;
+        selectedDate: string;
+      };
+    };
+  };
 }
 
-export default function ConfirmationScreen({ navigation }: Props) {
-
+export default function ConfirmationScreen({ navigation, route }: Props) {
+    const { socialDetails } = route.params;
   return (
     <>
       <View style={styles.container}>
         <Text style={styles.h1}>Social Has Been Confirmed</Text>
-        <Text style={styles.subtitle}>Everyone can now view your social!</Text>
+        <Text style={styles.subtitle}>Thanks {socialDetails.author},</Text>
+        <Text style={styles.subtitle}>See you on {new Date(socialDetails.selectedDate).toLocaleString()} for {socialDetails.title}!</Text>
         <Image
           style={styles.image}
-          source={require("../../../assets/mdb-logo.png")}
+          source={{uri: socialDetails.eventImage}}
         />
         <View style={styles.buttonContainer}>
           <Button
