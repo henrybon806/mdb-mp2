@@ -5,12 +5,13 @@ import FeedScreen from "./FeedScreen/FeedScreen.main";
 import DetailScreen from "./DetailScreen/DetailScreen.main";
 import HomeScreen from "./HomeScreen/HomeScreen.main";
 import NewSocialScreen from "../NewSocialScreen/NewSocialScreen.main";
-import { SocialModel } from "../../../models/social";
+import ConfirmationScreen from "../ConfirmationScreen/ConfirmationScreen.main";
+import { SocialData } from "../../../models/social";
 
 export type MainStackParamList = {
   HomeScreen: undefined;
   FeedScreen: undefined;
-  DetailScreen: { social: SocialModel };
+  DetailScreen: { social: SocialData };
   NewSocialScreen: undefined;
   ConfirmationScreen: undefined;
 };
@@ -30,17 +31,7 @@ export function MainStackScreen() {
       <MainStack.Screen
         name="FeedScreen"
         component={FeedScreen}
-        options={({ navigation }) => ({
-          title: "Socials",
-          headerLeft: () => (
-            <Button
-              title="Home"
-              onPress={ () => navigation.navigate("HomeScreen") }
-            />
-          ),
-          headerTitle: "All Socials",
-        })
-        }
+        options={{ headerShown: false }}
       />
       <MainStack.Screen
         name="DetailScreen"
@@ -53,14 +44,34 @@ export function MainStackScreen() {
           title: "Socials",
           headerLeft: () => (
             <Button
+              title="Cancel"
+              onPress={ () => navigation.goBack() }
+            />
+          ),
+          headerTitle: "Create Social",
+          presentation: "modal", 
+          gestureDirection: "vertical",
+        })
+        }
+        component={NewSocialScreen}
+      />
+      <MainStack.Screen
+        name="ConfirmationScreen"
+        options={({ navigation }) => ({
+          title: "Confirmation",
+          headerRight: () => (
+            <Button
               title="Home"
               onPress={ () => navigation.navigate("HomeScreen") }
             />
           ),
-          headerTitle: "Create Social",
+          headerLeft: () => null,
+          headerTitle: "Confirmation",
+          presentation: "modal", 
+          gestureDirection: "horizontal",
         })
         }
-        component={NewSocialScreen}
+        component={ConfirmationScreen}
       />
       <MainStack.Screen
         name="HomeScreen"

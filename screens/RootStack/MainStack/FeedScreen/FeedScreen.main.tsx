@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, Image } from "react-native";
 import { Appbar, Card } from "react-native-paper";
-import firebase from "firebase/app";
-import "firebase/firestore";
-import { SocialModel } from "../../../../models/social.js";
+import { app } from "../../../../firebase.config";
+import { getFirestore, doc, query, orderBy, onSnapshot, collection, Timestamp } from "firebase/firestore";
 import { styles } from "./FeedScreen.styles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainStackParamList } from "../MainStackScreen.js";
+import { SocialData } from "../../../../models/social";
 
 /* HOW TYPESCRIPT WORKS WITH PROPS:
 
@@ -25,7 +25,9 @@ interface Props {
 }
 
 export default function FeedScreen({ navigation }: Props) {
-  // TODO: Initialize a list of SocialModel objects in state.
+  const [socials, setSocials] = useState<SocialData[]>([]);
+  const db = getFirestore(app);
+  const socialColRef = collection(db, "Socials");
 
   /* TYPESCRIPT HINT: 
     When we call useState(), we can define the type of the state
@@ -47,24 +49,84 @@ export default function FeedScreen({ navigation }: Props) {
           load socials on this screen.
   */
 
-  const renderItem = ({ item }: { item: SocialModel }) => {
-    // TODO: Return a Card corresponding to the social object passed in
-    // to this function. On tapping this card, navigate to DetailScreen
-    // and pass this social.
-
-    return null;
+  const renderItem = ({ item }: { item: SocialData }) => {
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate("DetailScreen", { social: item })}>
+        <Card style={styles.card}>
+          <Card.Title 
+            title={item.title} 
+            titleStyle={styles.cardTitle}
+            subtitleStyle={styles.cardSubtitle}
+          />
+          <Card.Content>
+            {item.image ? (
+              <Image 
+                source={{ uri: item.image }} 
+                style={styles.cardImage} 
+              />
+            ) : (
+              <Image 
+                style={styles.cardImage} 
+                source={require("../../../../assets/social.jpeg")}
+              />
+            )}
+            <Text style={styles.cardTime}>
+              {item.time instanceof Timestamp
+              ? new Date(item.time.toDate()).toLocaleString()
+              : item.time}
+            </Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
   };
 
+  useEffect(() => {
+    const socialsQuery = query(
+      socialColRef, 
+      orderBy("time", "desc") 
+    );
+
+    const unsub = onSnapshot(socialsQuery, (snapshot) => {
+      const socialsData = snapshot.docs.map( (doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+        author: doc.data().author,
+        content: doc.data().content,
+        image: doc.data().image,
+        time: doc.data().time,
+        location: doc.data().location,
+      }));
+      setSocials(socialsData);
+    });
+    return () => unsub();
+  }, []);
+
   const NavigationBar = () => {
-    // TODO: Return an AppBar, with a title & a Plus Action Item that goes to the NewSocialScreen.
-    return null;
+    return (      
+      <Appbar.Header>
+        <Appbar.Action icon="arrow-left" onPress={() => navigation.navigate("HomeScreen")} />
+        <Appbar.Content title="All Socials"/>
+        <Appbar.Action icon="plus" onPress={() => navigation.navigate("NewSocialScreen")} />
+      </Appbar.Header>
+    );
   };
 
   return (
     <>
       {/* Embed your NavigationBar here. */}
+      <NavigationBar />
       <View style={styles.container}>
         {/* Return a FlatList here. You'll need to use your renderItem method. */}
+          {socials.length === 0 ? (
+          <Text style={{ ...styles.h3, textAlign:"center", marginTop:20}}>No Socials To Display</Text>
+        ) : (
+          <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+            {socials.map((item) => (
+              <View key={item.id}>{renderItem({ item })}</View>
+            ))}
+          </ScrollView>
+        ) }
       </View>
     </>
   );
